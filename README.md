@@ -1,4 +1,7 @@
-# WebsiteStarter
-A javascript project where HTML is scripted from modules.
+# Notes
+A javascript project using
+Javascript Library: https://github.com/TranquilAbyss/WebsiteStarter
+Sounds: https://github.com/fuhton/piano-mp3
 
-This library is a work in progress.
+#Try It
+https://tranquilabyss.github.io/Notes/
