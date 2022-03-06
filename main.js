@@ -9,12 +9,17 @@ let title = "Notes"
 let keyCounter = 0
 let timeCounter = 0
 
+let practicePiano
+
 function loadScripts() {
     LoadScript("module/piano/key.js")
     LoadScript("module/piano/whitekey.js")
     LoadScript("module/piano/blackkey.js")
     LoadScript("module/piano/octave.js")
     LoadScript("module/piano/piano.js")
+
+    LoadScript("module/pages/toolbar.js")
+    LoadScript("module/pages/page.js")
 }
 
 loadScripts()
@@ -26,18 +31,59 @@ window.onload = function() {
 
 function setupCore() {
     document.title = title
-    header = CreateEle('div', {id:"header", innerText:title})
+    header = CreateEle('div', {id:"header"})
+    header.InsertEle(CreateEle('h1', {innerText:title}))
+    toolbar = ToolbarModule()
     content = CreateEle('div', {id:"content"})
 
-    InsertEles(document.body, [header, content])
+    InsertEles(document.body, [header, toolbar, content])
 }
 
 function setupContent() {
-    content.InsertEle(randomNoteModule())
-    currentPiano = pianoSingleOctaveModule(4, [scoreKeyPress])
-    content.InsertEle(currentPiano)
-    content.InsertEle(pianoSingleOctaveModule(7, [scoreKeyPress]))
-    content.InsertEle(pianoModule([scoreKeyPress]))
+    let homePage = HomePageModule()
+    // let leanKeysPage = LearnKeysPageModule()
+    let practiceKeysPage = PracticeKeysPageModule()
+    // content.InsertEles([homePage, leanKeysPage, practiceKeysPage])
+    content.InsertEles([homePage, practiceKeysPage])
+}
+
+function HomePageModule() {
+    module = PageModule("Home")
+    toolbar.addPage(module)
+    module.InsertEle(CreateEle('h2', {innerText: "Home"}))
+    let description = CreateEle('p')
+    description.innerText = "This site will help you learn the piano.\n" +
+    "Controls:\n" +
+    "- Mouse: Left or right click on keys to play\n" +
+    "- Keyboard: Leave mouse on a piano and press keys, \"ASDFGHJ, WE TYU\""
+    module.InsertEle(description)
+    module.InsertEle(pianoModule())
+    return module
+}
+
+function LearnKeysPageModule() {
+    module = PageModule("Learn Keys")
+    toolbar.addPage(module)
+    module.InsertEle(CreateEle('h2', {innerText: "Learn Keys"}))
+    return module
+}
+
+function PracticeKeysPageModule() {
+    module = PageModule("Practice Keys")
+    toolbar.addPage(module)
+    module.InsertEle(CreateEle('h2', {innerText: "Practice Keys"}))
+    let description = CreateEle('p')
+    description.innerText = "Practice finding the correct key, start by clicking Random Note.\n"+
+    "A note letter will appear, and a sound will play. If you can match the note, then a new note will play automatically.\n"+
+    "Playing with the keyboard is recommended.\n\n" +
+    "Goal: Practice muscle memory pressing the correct key. Then reduce time between presses.\n" +
+    "Tip: Try not to think where the key is, let your fingers guess until they improve.\n" +
+    "Challenge: Try playing with your eyes closed and see if you can guess the key letter by sound."
+    module.InsertEle(description)
+    module.InsertEle(randomNoteModule())
+    practicePiano = pianoSingleOctaveModule(4, [scoreKeyPress])
+    module.InsertEle(practicePiano)
+    return module
 }
 
 function checkKey(key) {
@@ -46,7 +92,7 @@ function checkKey(key) {
 
     if(key.letter == noteOutput.innerText) {
         let time = (Date.now() - timeCounter) / 1000
-        scoreOutput.innerText = "(Keys Presed " + keyCounter + ". Time " + time +"s)"
+        scoreOutput.innerText = "(Wrong Keys " + (keyCounter - 1) + ". Time " + time +"s)"
 
         keyCounter = 0
         timeCounter = Date.now()
@@ -65,13 +111,14 @@ function randomNoteModule() {
 }
 
 function setNoteOutput(noteOutput) {
+    currentPiano = practicePiano
     let noteLetter = generateNote()
     noteOutput.innerText = noteLetter
     playNote(noteLetter, 4)
 }
 
 function generateNote() {
-    let notes = currentPiano.childNodes[0].notes
+    let notes = practicePiano.childNodes[0].notes
     let note = notes[Math.floor(Math.random() * notes.length)]
     keyCounter = 0
     timeCounter = Date.now()
