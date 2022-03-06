@@ -34,9 +34,6 @@ function playSound(file) {
 }
 
 function playNoteOnMousePress(letter, octave) {
-    event.stopPropagation();
-    // TODO fix how pianos are selected
-    currentPiano = event.target.parentElement.parentElement
     if (event.buttons > 0) {
         event.target.playKey()
     }

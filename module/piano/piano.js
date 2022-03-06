@@ -20,16 +20,14 @@ function setLastKey(key) {
 }
 
 function pianoSingleOctaveModule(octave, keyPressHooks = [], keyReleaseHooks = []) {
-    let module = CreateEle('div', {class:"piano"})
-    module.classList.add("piano")
+    let module = pianoEmptyModule()
     keyPressHooks.push(setLastKey)
     module.InsertEle(octaveModule(octave, 0, keyPressHooks, keyReleaseHooks))
     return module
 }
 
 function pianoModule(keyPressHooks = [], keyReleaseHooks = []) {
-    let module = CreateEle('div')
-    module.classList.add("piano")
+    let module = pianoEmptyModule()
     keyPressHooks.push((key) => lastKey = key)
     for (let o = 1; o <= 7; o++) {
         module.InsertEle(octaveModule(o, o - 1, keyPressHooks, keyReleaseHooks))
@@ -38,7 +36,18 @@ function pianoModule(keyPressHooks = [], keyReleaseHooks = []) {
     return module
 }
 
+function pianoEmptyModule() {
+    let module = CreateEle('div')
+    module.classList.add("piano")
+    module.onmouseleave = () => {currentPiano = null}
+    module.onmouseover = () => {currentPiano = event.target.parentElement.parentElement}
+    return module
+}
+
 function playNoteOnKeyPress() {
+    if (!currentPiano) {
+        return
+    }
     // TODO simplify key logic
     if (currentPiano.classList.contains("piano")) {
         if (event.key == "a" && (keyIntialPress["a"] === undefined || keyIntialPress["a"])) {
