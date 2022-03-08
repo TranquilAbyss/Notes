@@ -41,10 +41,9 @@ function setupCore() {
 
 function setupContent() {
     let homePage = HomePageModule()
-    // let leanKeysPage = LearnKeysPageModule()
+    let leanKeysPage = LearnKeysPageModule()
     let practiceKeysPage = PracticeKeysPageModule()
-    // content.InsertEles([homePage, leanKeysPage, practiceKeysPage])
-    content.InsertEles([homePage, practiceKeysPage])
+    content.InsertEles([homePage, leanKeysPage, practiceKeysPage])
 }
 
 function HomePageModule() {
@@ -65,6 +64,10 @@ function LearnKeysPageModule() {
     module = PageModule("Learn Keys")
     toolbar.addPage(module)
     module.InsertEle(CreateEle('h2', {innerText: "Learn Keys"}))
+    module.InsertEle(CreateEle('P', {innerText: "External Links:"}))
+    module.InsertEle(CreateEle('a', {href: "https://www.piano-lessons-info.com/piano-key-notes.html", innerText: "https://www.piano-lessons-info.com/piano-key-notes.html", target:"_blank", rel:"noopener noreferrer"}))
+    module.InsertEle(CreateEle('br'))
+    module.InsertEle(CreateEle('a', {href: "https://www.piano-lessons-info.com/piano-music-notes-quiz.html", innerText: "https://www.piano-lessons-info.com/piano-music-notes-quiz.html", target:"_blank", rel:"noopener noreferrer"}))
     return module
 }
 
@@ -92,8 +95,11 @@ function checkKey(key) {
 
     if(key.letter == noteOutput.innerText) {
         let time = (Date.now() - timeCounter) / 1000
-        scoreOutput.innerText = "(Wrong Keys " + (keyCounter - 1) + ". Time " + time +"s)"
-
+        if (keyCounter == 1) {
+            scoreOutput.innerText = "(Correct Key! Time " + time +"s)"
+        } else {
+            scoreOutput.innerText = "(Wrong Keys " + (keyCounter - 1) + ". Time " + time +"s)"
+        }
         keyCounter = 0
         timeCounter = Date.now()
         setTimeout(() => setNoteOutput(noteOutput), 1000)
