@@ -1,19 +1,10 @@
 let currentPiano
 let keyIntialPress = {}
 let lastKey
+let pressedKeys
 
 document.onkeydown = playNoteOnKeyPress
-document.onkeyup = releaseKey
-
-function releaseKey() {
-    //TODO replace with better release code, instead of last (some get stuck)
-    if (lastKey) {
-        lastKey.releaseKey()
-    }
-    if (event.key) {
-        keyIntialPress[event.key] = true
-    }
-}
+document.onkeyup = releaseNoteOnKeyRelease
 
 function setLastKey(key) {
     lastKey = key
@@ -23,6 +14,7 @@ function pianoSingleOctaveModule(octave, keyPressHooks = [], keyReleaseHooks = [
     let module = pianoEmptyModule()
     keyPressHooks.push(setLastKey)
     module.InsertEle(octaveModule(octave, 0, keyPressHooks, keyReleaseHooks))
+    setupHotKeys(module)
     return module
 }
 
@@ -33,6 +25,7 @@ function pianoModule(keyPressHooks = [], keyReleaseHooks = []) {
         module.InsertEle(octaveModule(o, o - 1, keyPressHooks, keyReleaseHooks))
     }
     module.InsertEle(whiteKeyModule("C", 8))
+    setupHotKeys(module)
     return module
 }
 
@@ -44,48 +37,35 @@ function pianoEmptyModule() {
     return module
 }
 
+function setupHotKeys(module) {
+    module.childNodes[0].childNodes[0].hotKey = "a"
+    module.childNodes[0].childNodes[1].hotKey = "s"
+    module.childNodes[0].childNodes[2].hotKey = "d"
+    module.childNodes[0].childNodes[3].hotKey = "f"
+    module.childNodes[0].childNodes[4].hotKey = "g"
+    module.childNodes[0].childNodes[5].hotKey = "h"
+    module.childNodes[0].childNodes[6].hotKey = "j"
+    module.childNodes[0].childNodes[7].hotKey = "w"
+    module.childNodes[0].childNodes[8].hotKey = "e"
+    module.childNodes[0].childNodes[9].hotKey = "t"
+    module.childNodes[0].childNodes[10].hotKey = "y"
+    module.childNodes[0].childNodes[11].hotKey = "u"
+}
+
 function playNoteOnKeyPress() {
     if (!currentPiano) {
         return
     }
-    // TODO simplify key logic
     if (currentPiano.classList.contains("piano")) {
-        if (event.key == "a" && (keyIntialPress["a"] === undefined || keyIntialPress["a"])) {
-            currentPiano.childNodes[0].childNodes[0].playKey()
-        }
-        if (event.key == "s" && (keyIntialPress["s"] === undefined || keyIntialPress["s"])) {
-            currentPiano.childNodes[0].childNodes[1].playKey()
-        }
-        if (event.key == "d" && (keyIntialPress["d"] === undefined || keyIntialPress["d"])) {
-            currentPiano.childNodes[0].childNodes[2].playKey()
-        }
-        if (event.key == "f" && (keyIntialPress["f"] === undefined || keyIntialPress["f"])) {
-            currentPiano.childNodes[0].childNodes[3].playKey()
-        }
-        if (event.key == "g" && (keyIntialPress["g"] === undefined || keyIntialPress["g"])) {
-            currentPiano.childNodes[0].childNodes[4].playKey()
-        }
-        if (event.key == "h" && (keyIntialPress["h"] === undefined || keyIntialPress["h"])) {
-            currentPiano.childNodes[0].childNodes[5].playKey()
-        }
-        if (event.key == "j" && (keyIntialPress["j"] === undefined || keyIntialPress["j"])) {
-            currentPiano.childNodes[0].childNodes[6].playKey()
-        }
-        if (event.key == "w" && (keyIntialPress["w"] === undefined || keyIntialPress["w"])) {
-            currentPiano.childNodes[0].childNodes[7].playKey()
-        }
-        if (event.key == "e" && (keyIntialPress["e"] === undefined || keyIntialPress["e"])) {
-            currentPiano.childNodes[0].childNodes[8].playKey()
-        }
-        if (event.key == "t" && (keyIntialPress["t"] === undefined || keyIntialPress["t"])) {
-            currentPiano.childNodes[0].childNodes[9].playKey()
-        }
-        if (event.key == "y" && (keyIntialPress["y"] === undefined || keyIntialPress["y"])) {
-            currentPiano.childNodes[0].childNodes[10].playKey()
-        }
-        if (event.key == "u" && (keyIntialPress["u"] === undefined || keyIntialPress["u"])) {
-            currentPiano.childNodes[0].childNodes[11].playKey()
-        }
-        keyIntialPress[event.key] = false
+        currentPiano.childNodes[0].childNodes.forEach((key) => key.playHotKey(event.key))
+    }
+}
+
+function releaseNoteOnKeyRelease() {
+    if (!currentPiano) {
+        return
+    }
+    if (currentPiano.classList.contains("piano")) {
+        currentPiano.childNodes[0].childNodes.forEach((key) => key.releaseHotKey(event.key))
     }
 }
