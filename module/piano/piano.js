@@ -3,6 +3,8 @@ let keyIntialPress = {}
 let lastKey
 let pressedKeys
 
+window.AudioContext = new (window.AudioContext || window.webkitAudioContext)();
+
 document.onkeydown = playNoteOnKeyPress
 document.onkeyup = releaseNoteOnKeyRelease
 
