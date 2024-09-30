@@ -8,13 +8,14 @@ function keyModule(letter, octave, keyPressHooks = [], keyReleaseHooks = []) {
     module.mediaElementSource = window.AudioContext.createMediaElementSource(module.audio)
     module.gainNode = window.AudioContext.createGain()
     module.intialPress = true
-    module.keyGainFade = 0.02
+    module.keyGainFade = 0.015
     module.mediaElementSource.connect(module.gainNode)
     module.gainNode.connect(window.AudioContext.destination)
     
     module.playKey = function() {
         this.style.borderStyle = "inset"
         this.gainNode.gain.value = 1
+        window.AudioContext.resume()
         playAudio(getSoundFile(this.letter, this.octave), this.audio)
         if (this.keyPressHooks.length > 0) {
             this.keyPressHooks.forEach((keyHook) => keyHook(this))
@@ -25,6 +26,7 @@ function keyModule(letter, octave, keyPressHooks = [], keyReleaseHooks = []) {
             if (this.intialPress) {
                 this.style.borderStyle = "inset"
                 this.gainNode.gain.value = 1
+                window.AudioContext.resume()
                 playAudio(getSoundFile(this.letter, this.octave), this.audio)
                 if (this.keyPressHooks.length > 0) {
                     this.keyPressHooks.forEach((keyHook) => keyHook(this))
