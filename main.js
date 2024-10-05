@@ -54,7 +54,8 @@ function HomePageModule() {
     description.innerText = "This site will help you learn the piano.\n" +
     "Controls:\n" +
     "- Mouse: Left or right click on keys to play\n" +
-    "- Keyboard: Leave mouse on a piano and press keys, \"ASDFGHJ, WE TYU\""
+    "- Keyboard: Leave mouse on a piano and press keys:\n C:\"A\"\nD:\"S\"\nE:\"D\"\nF:\"F\"\nG:\"G\"\nA:\"H\"\nB:\"J\"\n Db:\"W\"\nEb:\"E\"\nGb:\"T\"\nAb:\"Y\"\nBb:\"U\"\n" +
+    "Change octaves by prssing the \"Z\" and \"X\""
     module.InsertEle(description)
     module.InsertEle(pianoModule())
     return module

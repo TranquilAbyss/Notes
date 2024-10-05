@@ -20,3 +20,13 @@ function octaveModule(octave, set = 0, keyPressHooks = [], keyReleaseHooks = [])
     }
     return module
 }
+
+function octaveCModule(octave, keyPressHooks = [], keyReleaseHooks = []) {
+    let module = CreateEle('span')
+    module.octave = octave
+    module.notes = "C"
+    for (let n = 0; n < module.notes.length; n++) {
+        module.InsertEle(whiteKeyModule(module.notes[n], octave, keyPressHooks, keyReleaseHooks))
+    }
+    return module
+}
